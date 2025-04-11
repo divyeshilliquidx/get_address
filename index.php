@@ -1,5 +1,37 @@
 <?php
 
+$jsonFile = 'postcode_data.json';
+$jsonData = file_get_contents($jsonFile);
+
+// Decode JSON into a PHP array
+$data = json_decode($jsonData, true);
+
+// Initialize the result array
+$resultArray = [];
+
+// Loop through each item in the JSON data
+foreach ($data['Items'] as $item) {
+    // Get the address from the 'Text' key
+    $address = $item['Text'];
+
+    // Get the postcode from the 'Description' key (after the comma)
+    $descriptionParts = explode(',', $item['Description']);
+    $postcode = trim(end($descriptionParts)); // Get the last part and trim whitespace
+
+    // Group addresses by postcode
+    if (!isset($resultArray[$postcode])) {
+        $resultArray[$postcode] = [];
+    }
+    $resultArray[$postcode][] = $address;
+}
+
+
+
+// Output the resulting array for verification
+echo '<pre>';
+print_r($resultArray);
+
+
 
 // Database configuration
 $host = 'localhost'; // Replace with your database host
